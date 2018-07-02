@@ -9,7 +9,6 @@
 QGraphicsScene* scene;
 GameTree* game_tree;
 GameWindow* gamewindow;
-GTreeRenderer* renderer;
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -24,11 +23,8 @@ MainWindow::MainWindow(QWidget *parent) :
     show();
 
     gamewindow = new GameWindow(this);
-    renderer = new GTreeRenderer(scene, gamewindow->tree);
     game_tree = gamewindow->tree;
-    connect(gamewindow->tree, SIGNAL(redrawSig()), renderer, SLOT(rebuild()));
     connect(gamewindow->tree, SIGNAL(redrawSig()), this, SLOT(rebuildTree()));
-    connect(gamewindow, SIGNAL(newMove()), renderer, SLOT(rebuild()));
     connect(gamewindow, SIGNAL(newMove()), this, SLOT(rebuildTree()));
 
     ui->tabWidget->insertTab(0,  gamewindow, "game window");
@@ -66,8 +62,6 @@ void MainWindow::TreeTest()
 {
     game_tree = new GameTree();
     game_tree->CreateTestTree();
-    renderer = new GTreeRenderer(scene, game_tree);
-    connect(game_tree, SIGNAL(redrawSig()), renderer, SLOT(rebuild()));
 
 }
 
@@ -117,7 +111,6 @@ void MainWindow::on_startMinimaxButton_clicked()
 void MainWindow::on_resetButton_clicked()
 {
     game_tree->Reset();
-    renderer->RenderTree(game_tree->root);
 }
 
 void MainWindow::on_dy_slider_valueChanged(int value)
